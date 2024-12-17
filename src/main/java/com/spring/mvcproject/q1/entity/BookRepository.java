@@ -13,7 +13,7 @@ public class BookRepository {
     private Long id;
     private String title;
     private String author;
-    private Long price;
+    private int price;
 
 
 
