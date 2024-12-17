@@ -54,7 +54,7 @@
         }
 
         section.score {
-            padding: 200px 50px 100px;
+            padding: 50px 50px 100px;
             font-size: 1.5em;
         }
 
@@ -104,22 +104,73 @@
 
         <ul class="score-list">
             <li class="list-header">
-                <div class="count">총 학생 수: xxx명</div>
+                <div class="count">총 학생 수: <span id="count"></span>명</div>
                 <div class="sort-link-group">
-                    <div><a href="#">학번순</a></div>
-                    <div><a href="#">이름순</a></div>
-                    <div><a href="#">평균순</a></div>
+                    <div><a id="id" href="#">학번순</a></div>
+                    <div><a id="name" href="#">이름순</a></div>
+                    <div><a id="average" href="#">평균순</a></div>
                 </div>
-
             </li>
 
             <!-- 학생 성적정보가 들어갈 부분 -->
+            <li>
+                <ul id="scores"></ul>
+            </li>
 
         </ul>
 
     </section>
 </div>
 
+
+<script>
+    const API_URL = '/api/v1/scores';
+
+    // 화면에 성적목록을 렌더링하는 함수
+    function renderScoreList(data) {
+        // 총 학생 수 렌더링
+        document.getElementById('count').textContent = data.length;
+
+        const $scores = document.getElementById('scores');
+
+        data.forEach(({id, name, kor, eng, math}) => {
+            $scores.innerHTML += `
+                    <li>
+                        # 이름: \${name}, 국어: \${kor}점,
+                        영어: \${eng}점, 수학: \${math}점
+                        <a href='#' class='del-btn'>삭제</a>
+                    </li>
+                `;
+        });
+    }
+    const $id = document.getElementById('id');
+    const $name = document.getElementById('name');
+    const $average = document.getElementById('average');
+
+    // 이벤트 클릭시 재 렌더링 해주는 함수
+
+    function sortScores(sortType){
+        document.getElementById('scores').innerHTML= '';
+
+        fetchGetScores(sortType);
+    }
+    $id.addEventListener('click' ,() =>sortScores('id'));
+    $name.addEventListener('click' ,() =>sortScores('name'));
+    $average.addEventListener('click' ,() =>sortScores('average'));
+
+    // 서버에서 성적 정보를 가져오는 요청 메서드
+    async function fetchGetScores(sortType='id') {
+        const res = await fetch(API_URL + `?sort=\${sortType}`);
+        const data = await res.json();
+        console.log(data);
+
+        // 화면에 정보 렌더링
+        renderScoreList(data);
+    }
+
+    //==== 실행 코드 ====//
+    fetchGetScores();
+</script>
 
 </body>
 
