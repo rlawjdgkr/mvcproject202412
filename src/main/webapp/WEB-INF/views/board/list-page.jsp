@@ -10,7 +10,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>스프링 연습프로젝트 사이트</title>
 
-
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Single+Day&display=swap" rel="stylesheet">
@@ -123,38 +122,36 @@
 
     <div class="card-container">
 
-        <div class="card-wrapper">
-            <section class="card" data-bno="1">
-                <div class="card-title-wrapper">
-                    <h2 class="card-title">하하호호</h2>
-                    <div class="time-view-wrapper">
-                        <div class="time">
-                            <i class="far fa-clock"></i>
-                            2024-12-18
-                        </div>
-
-
-
-                        <div class="view">
-                            <i class="fas fa-eye"></i>
-                            <span class="view-count">0</span>
-                        </div>
-                    </div>
+        <!-- <div class="card-wrapper">
+          <section class="card" data-bno="1">
+            <div class="card-title-wrapper">
+              <h2 class="card-title">하하호호</h2>
+              <div class="time-view-wrapper">
+                <div class="time">
+                  <i class="far fa-clock"></i>
+                  2024-12-18
                 </div>
-                <div class="card-content">
-                    가나다라마바사
+                <div class="view">
+                  <i class="fas fa-eye"></i>
+                  <span class="view-count">0</span>
                 </div>
-            </section>
-
-            <!-- 관리자이거나 본인이 쓴글에만 렌더링되도록 -->
-            <div class="card-btn-group">
-                <button class="del-btn">
-                    <i class="fas fa-times"></i>
-                </button>
+              </div>
             </div>
+            <div class="card-content">
+              가나다라마바사
+            </div>
+          </section>
 
-        </div>
+          <div class="card-btn-group">
+            <button class="del-btn">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+
+        </div> -->
         <!-- end div.card-wrapper -->
+
+
 
 
 
@@ -193,6 +190,9 @@
 
 <script>
 
+    //====== 관련 전역변수 =====//
+    const API_BASE_URL = '/api/v1/boards';
+
     const $cardContainer = document.querySelector('.card-container');
 
     //================= 삭제버튼 스크립트 =================//
@@ -206,9 +206,29 @@
             console.log('삭제버튼 클릭');
             modal.style.display = 'flex'; // 모달 창 띄움
 
+            // 여기서 클릭한 x버튼의 근처에 있는 card의 ID를 찾기
+            const id = e.target
+                .closest('.card-wrapper')
+                .querySelector('.card')
+                .dataset.bno;
+
+
             // 확인 버튼 이벤트
             confirmDelete.onclick = e => {
-                // 삭제 처리 로직
+                // 삭제 처리 로직 - 서버에 DELETE요청
+                const fetchDeleteBoard = async (id) => {
+                    const res = await fetch(`\${API_BASE_URL}/\${id}`, {
+                        method: 'DELETE'
+                    });
+                    if (res.status === 200) {
+                        fetchGetBoardList();
+                    } else {
+                        alert('삭제 실패!');
+                    }
+                };
+
+
+                fetchDeleteBoard(id);
 
                 modal.style.display = 'none'; // 모달 창 닫기
             };
@@ -275,54 +295,64 @@
     document.querySelector('.add-btn').onclick = e => {
         window.location.href = '/board/write';
     };
-    const API_URL = "/api/v1/boards";
-        const $card = document.querySelector('.card-container');
 
-    //화면에 출력하는 코드
-    function renderBoard(data) {
 
-        data.forEach(({id, title, content, viewCount, regDateTime}) =>
-        {
-            $card.innerHTML += `
-         <div class="card-wrapper">
-         <section class="card" data-bno="\{id}">
-                <div class="card-title-wrapper">
+    //====== 일반 함수 ======//
+    // 화면에 게시물배열을 렌더링
+    function renderBoardList(boardList) {
+        $cardContainer.innerHTML = ''; // reset
+
+        boardList.forEach(({id, title, content, regDateTime, viewCount}) => {
+            $cardContainer.innerHTML += `
+              <div class="card-wrapper">
+                <section class="card" data-bno="\${id}">
+                  <div class="card-title-wrapper">
                     <h2 class="card-title">\${title}</h2>
                     <div class="time-view-wrapper">
-                        <div class="time">
-                            <i class="far fa-clock">\${regDateTime}</i>
-
-                        </div>
-
-
-
-                        <div class="view">
-                            <i class="fas fa-eye"></i>
-                            <span class="view-count">\${viewCount}</span>
-                        </div>
+                      <div class="time">
+                        <i class="far fa-clock"></i>
+                        \${regDateTime}
+                      </div>
+                      <div class="view">
+                        <i class="fas fa-eye"></i>
+                        <span class="view-count">\${viewCount}</span>
+                      </div>
                     </div>
-                </div>
-                <div class="card-content">
+                  </div>
+                  <div class="card-content">
                     \${content}
-                </div>
-            </section>
-        `
-        }
-        )}
+                  </div>
+                </section>
 
-    //JSON을 불러오는 코드
-    async function fetchBoard(){
-        const res = await fetch(API_URL)
+                <div class="card-btn-group">
+                  <button class="del-btn">
+                    <i class="fas fa-times"></i>
+                  </button>
+                </div>
+
+              </div>
+            `;
+        });
+    }
+
+    //====== 서버 API통신 관련 함수 ======//
+    async function fetchGetBoardList() {
+        const res = await fetch(API_BASE_URL);
         const data = await res.json();
         console.log(data);
 
-        renderBoard(data);
+        // 렌더링
+        renderBoardList(data);
     }
 
-    fetchBoard();
 
+    // ====== 메인 실행 코드 ===== //
+    // 서버에 목록 조회 API요청 보내기
+    fetchGetBoardList();
 
 </script>
+
+
 
 </body>
 

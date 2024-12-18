@@ -4,9 +4,7 @@ import com.spring.mvcproject.board.entity.Board;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -16,15 +14,13 @@ public class BoardApiController {
     private Long nextId = 1L;
 
     public BoardApiController() {
-        Board bd1 = new Board(nextId, "김철수", "하하호호", 3, LocalDateTime.now());
-        nextId++;
-        Board bd2 = new Board(nextId, "박지훈", "가갸거겨", 20, LocalDateTime.now());
-        nextId++;
-        Board bd3 = new Board(nextId, "최정", "최정랜더스", 30, LocalDateTime.now());
-        nextId++;
-        data.put(bd1.getId(), bd1);
-        data.put(bd2.getId(), bd2);
-        data.put(bd3.getId(), bd3);
+        Board b1 = Board.of(nextId++, "꿀잼게시물" , "개노잼이야 사실");
+        Board b2 = Board.of(nextId++, "노잼게시물" , "개꿀잼이야 사실");
+        Board b3 = Board.of(nextId++, "방구뽕" , "방구");
+
+        data.put(b1.getId(), b1);
+        data.put(b2.getId(), b2);
+        data.put(b3.getId(), b3);
 
     }
 
@@ -32,8 +28,9 @@ public class BoardApiController {
     // 게시물 목록조회 GET
     @GetMapping
     public List<Board> getBoards() {
-        return data.values()
+        return new ArrayList<>(data.values())
                 .stream()
+                .sorted(Comparator.comparing(Board::getId).reversed())
                 .collect(Collectors.toList());
 
     }
