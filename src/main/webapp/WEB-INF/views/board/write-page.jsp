@@ -166,10 +166,12 @@
     <h1>꾸러기 게시판 글쓰기</h1>
     <form id="board-form" novalidate>
         <label for="title">작성자</label>
-        <input type="text" id="writer" name="writer" value="익명" readonly>
+        <input type="text" id="writer" name="writer" value="익명">
         <label for="title">제목</label>
+        <p class="error" id="dtoTitle"></p>
         <input type="text" id="title" name="title" required>
         <label for="content">내용</label>
+        <p class="error" id="dtoContent"></p>
         <textarea id="content" name="content" maxlength="200" required></textarea>
         <div class="buttons">
             <button class="list-btn" type="button"
@@ -210,43 +212,55 @@
     const API_BASE_URL = '/api/v1/boards';
     const $form = document.getElementById('board-form');
 
-    async function fetchPost(payload) {
+    async function fetchPostBoard({title,content}) {
+        //요청 시작 시 에러 메시지 리셋
+        document.querySelectorAll('.error').forEach($errorParagraph =>{
+            $errorParagraph.textContent = '';
+        })
         const res = await fetch(API_BASE_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-            });
-        if(res.status ===200){
-            alert('게시물이 등록되었습니다')
-            window.location.href='/board/list'
-        }else {
-            alert('등록실패')
+            body: JSON.stringify({
+                dtoTitle : title,
+                dtoContent: content
+            })
+        });
+        if (res.status === 200) {
+            alert('게시물이 등록되었습니다.');
+            // 목록으로 링크이동
+            window.location.href='/board/list';
+        } else if(res.status === 400) {
+            const errorJson = await res.json();
+            for (const property of errorJson) {
+                document.getElementById(property).textContent = errorJson[property];
+            console.log(property);
+
+            }
+            }
         }
 
-    }
 
     $form.addEventListener('submit', e => {
         e.preventDefault(); // 새로고침 방지 (기본 동작 방지)
 
-        //방법 1
-
+        // payload(서버로 보낼 데이터) 만들기
         // const payload = {
-        //     title: document.getElementById('title').value,
-        //     content:document.getElementById('content').value
-        //
+        //   title: document.getElementById('title').value,
+        //   content: document.getElementById('content').value
         // };
-
-        //방법 2
 
         const formData = new FormData($form);
         // const payload = {
-        //     title: formData.get('title'),
-        //     content: formData.get('content'),
+        //   title: formData.get('title'),
+        //   content: formData.get('content'),
         // };
+
         const payload = Object.fromEntries(formData.entries());
-        console.log(payload);
+
+
+
         // 서버에 POST요청
-        fetchPost(payload);
+        fetchPostBoard(payload);
 
     });
 

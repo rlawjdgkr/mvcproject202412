@@ -1,6 +1,10 @@
 package com.spring.mvcproject.board.api;
 
+import com.spring.mvcproject.board.dto.request.BoardSaveDto;
 import com.spring.mvcproject.board.entity.Board;
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -42,15 +46,25 @@ public class BoardApiController {
     }
     //게시물 등록 POST
     @PostMapping
-    public String createBoard(
-        @RequestBody Board board
+    public ResponseEntity<?> createBoard(
+            @RequestBody @Valid BoardSaveDto dto
+        , BindingResult bindingResult
      ) {
+        if (bindingResult.hasErrors()) {
+            Map<String, String> errors = new HashMap<>();
+            bindingResult.getFieldErrors().forEach(fieldError -> {
+                errors.put(fieldError.getField(), fieldError.getDefaultMessage());
+            });
+            return ResponseEntity
+                    .badRequest()
+                    .body(errors);
+        }
+        Board board = new Board(dto);
         board.setId(nextId++);
-        board.setRegDateTime(LocalDateTime.now());
-        System.out.println("board = " + board);
+
         data.put(board.getId(), board);
-
-
-        return "게시물 등록 성공!";
+        return ResponseEntity
+                .ok()
+                .body("게시판 생성 완료!" + board.toString());
     }
 }
