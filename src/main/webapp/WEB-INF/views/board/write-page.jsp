@@ -203,21 +203,53 @@
             // editor = newEditor;
         })
         .catch(err => console.error(err));
-
-
-
 </script>
 
 <!-- custom script -->
 <script>
+    const API_BASE_URL = '/api/v1/boards';
     const $form = document.getElementById('board-form');
+
+    async function fetchPost(payload) {
+        const res = await fetch(API_BASE_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+            });
+        if(res.status ===200){
+            alert('게시물이 등록되었습니다')
+            window.location.href='/board/list'
+        }else {
+            alert('등록실패')
+        }
+
+    }
+
     $form.addEventListener('submit', e => {
-        e.preventDefault();
+        e.preventDefault(); // 새로고침 방지 (기본 동작 방지)
+
+        //방법 1
+
+        // const payload = {
+        //     title: document.getElementById('title').value,
+        //     content:document.getElementById('content').value
+        //
+        // };
+
+        //방법 2
+
         const formData = new FormData($form);
-        console.log(formData.get('title'));
-        console.log(formData.get('content'));
+        // const payload = {
+        //     title: formData.get('title'),
+        //     content: formData.get('content'),
+        // };
+        const payload = Object.fromEntries(formData.entries());
+        console.log(payload);
+        // 서버에 POST요청
+        fetchPost(payload);
 
     });
+
 </script>
 
 </body>

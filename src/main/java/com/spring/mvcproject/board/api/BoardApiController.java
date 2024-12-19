@@ -42,8 +42,15 @@ public class BoardApiController {
     }
     //게시물 등록 POST
     @PostMapping
-    public String createBoard(@RequestBody Board board) {
+    public String createBoard(
+        @RequestBody Board board
+     ) {
+        board.setId(nextId++);
+        board.setRegDateTime(LocalDateTime.now());
+        System.out.println("board = " + board);
         data.put(board.getId(), board);
-        return "생성되었습니다" + board.getId();
+
+
+        return "게시물 등록 성공!";
     }
 }

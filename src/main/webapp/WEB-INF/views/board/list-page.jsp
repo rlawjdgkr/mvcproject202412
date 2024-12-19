@@ -203,7 +203,7 @@
     $cardContainer.addEventListener('click', e => {
         // 삭제 버튼을 눌렀다면~
         if (e.target.matches('.card-btn-group *')) {
-            console.log('삭제버튼 클릭');
+
             modal.style.display = 'flex'; // 모달 창 띄움
 
             // 여기서 클릭한 x버튼의 근처에 있는 card의 ID를 찾기
