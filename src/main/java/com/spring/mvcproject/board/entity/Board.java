@@ -17,11 +17,7 @@ public class Board {
     private int viewCount; //조회수
     private LocalDateTime regDateTime; //작성일시
 
-    public Board(BoardSaveDto dto) {
-        this.title = dto.getDtoTitle();
-        this.content = dto.getDtoContent();
 
-    }
 
     // 정적 팩토리 메서드: 객체를 생성할 떄 자동으로 들어가는
     // 필드를 제외하고 객체를 빠르게 생헝해주는 메서드

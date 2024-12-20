@@ -3,36 +3,36 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
-  <title>Insert title here</title>
+<meta charset="UTF-8">
+<title>Insert title here</title>
 
-  <style>
-    .title {
-      background: orange;
-      color: red;
-    }
-  </style>
+<style>
+  .title {
+    background: orange;
+    color: red;
+  }
+</style>
 </head>
 <body>
-<h1 class="title">Pet.jsp파일입니다~~~</h1>
-<h2>메롱메롱~~</h2>
-<p id="content"></p>
+  <h1 class="title">Pet.jsp파일입니다~~~</h1>
+  <h2>메롱메롱~~</h2>
+  <p id="content"></p>
 
-<script>
-  const $p = document.getElementById('content');
-  fetch('/products')
-          .then(res => res.json())
-          .then(data => {
-            console.log(data);
-            data.forEach(product => {
-              $p.innerHTML += `
+  <script>
+    const $p = document.getElementById('content');
+    fetch('/products')
+      .then(res => res.json())
+      .then(data => {
+        console.log(data);
+        data.forEach(product => {
+          $p.innerHTML += `
             <div>
               제품명: \${product.name},
               가격: \${product.price}
             </div>
           `;
-            });
-          });
-</script>
+        });
+      });
+  </script>
 </body>
 </html>
