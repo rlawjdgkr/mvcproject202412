@@ -11,7 +11,7 @@ import java.util.*;
 import static java.util.Comparator.comparing;
 
 // 역할: 성적정보를 메모리에서 관리하는 역할
-@Repository
+//@Repository
 public class ScoreMemoryRepo implements ScoreRepository {
 
     private Map<Long, Score> scoreStore = new HashMap<>();
