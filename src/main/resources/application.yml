@@ -1,0 +1,25 @@
+server:
+  port=9000
+
+logging:
+  level:
+    root: info
+
+#logging.level.org.springframework.web.servlet.DispatcherServlet=DEBUG
+
+#jsp setting
+spring:
+  mvc:
+    view:
+      prefix: /WEB-INF/views/
+      suffix: .jsp
+  datasource:
+    url: mariadb://localhost:3306/practice
+    username: root
+    password: mariadb
+    driver-class-name: org.mariadb.jdbc.Driver
+#database setting
+
+
+
+

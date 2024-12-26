@@ -38,10 +38,10 @@ public class PersonRepository {
                     VALUES 
                         (?, ?, ?)
                 """;
-
+        Connection conn = null;
         try {
             // 1. DB에 접속하고 접속 정보를 받아옴
-            Connection conn = DriverManager.getConnection(url, username, password);
+            conn = DriverManager.getConnection(url, username, password);
 
             // 2. SQL을 실행할 수 있는 실행기 객체를 가져옴
             PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -58,6 +58,13 @@ public class PersonRepository {
 
         } catch (Exception e) {
             e.printStackTrace();
+        }finally{
+            //메모리 정리: 연결 해제
+            try {
+                if(conn != null) conn.close();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 

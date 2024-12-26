@@ -1,7 +1,6 @@
 package com.spring.mvcproject.board.routes;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,13 +22,9 @@ public class BoardPageController {
         return "board/write-page";
     }
 
-
     // detail-page.jsp를 열어주는 라우팅요청
     @GetMapping("/detail/{id}")
-    public String detail(@PathVariable Long id , Model model) {
-        System.out.println("/board/%s : GET".formatted(id));
-        model.addAttribute("id", id);
+    public String detail(@PathVariable Long id) {
         return "board/detail-page";
     }
 }
-

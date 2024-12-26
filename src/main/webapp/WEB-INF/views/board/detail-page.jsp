@@ -14,8 +14,8 @@
 
 <div id="wrap" class="form-container" >
 
-    <h1>1번 게시물 내용~ </h1>
-    <h2># 작성일자: 2024-12-20</h2>
+    <h1><span id="bno">1</span>번 게시물 내용~ </h1>
+    <h2># 작성일자:<span id="date"> 2024-12-20</span></h2>
     <label for="writer">작성자</label>
     <input type="text" id="writer" name="writer" value="익명" readonly>
     <label for="title">제목</label>
@@ -151,7 +151,22 @@
 
 </div>
 <script>
+    // 서버에 게시물 상세조회 API 요청
+    async function fetchDetail(){
+        const url = `/api/v1/boards/${id}`;
+        console.log('request url :' , url);
 
+        const res  = await fetch(url);
+        const {bno, content, date , board_title: title} = await res.json();
+
+        //랜더링
+        document.getElementById('bno').textContent = bno;
+        document.getElementById('content').textContent = content;
+        document.getElementById('title').value = title;
+        document.getElementById('date').textContent = date;
+    }
+
+    fetchDetail();
 </script>
 
 </body>

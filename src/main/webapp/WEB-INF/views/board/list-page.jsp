@@ -159,16 +159,29 @@
   const confirmDelete = document.getElementById('confirmDelete'); // 모달 삭제 확인버튼
   const cancelDelete = document.getElementById('cancelDelete'); // 모달 삭제 취소 버튼
 
-  $cardContainer.addEventListener('click', e=>{
-    if(e.target.matches('.card *')){
-      const id = e.target
-              .closest('.card-wrapper')
-              .querySelector('.card')
-              .dataset.bno;
-      console.log(id);
-      window.location.href ='board/detail/${id}';
-    }
-  })
+  <%--$cardContainer.addEventListener('click', e=>{--%>
+  <%--  if(e.target.matches('.card *')){--%>
+  <%--    const id = e.target--%>
+  <%--            .closest('.card-wrapper')--%>
+  <%--            .querySelector('.card')--%>
+  <%--            .dataset.bno;--%>
+  <%--    console.log(id);--%>
+  <%--    window.location.href ='board/detail/${id}';--%>
+  <%--  }--%>
+  <%--})--%>
+  // 게시물 상세조회 페이지 라우팅 요청
+  $cardContainer.addEventListener('click', e => {
+
+    const $card = e.target.closest('.card');
+    if (!e.target.matches('.card *')) return;
+
+    const bno = $card.dataset.bno;
+    console.log('상세조회 시켜주세요! id - ', bno);
+
+    // 라우팅 요청
+    window.location.href=`/board/detail/\${bno}`;
+
+  });
 
 
   $cardContainer.addEventListener('click', e => {

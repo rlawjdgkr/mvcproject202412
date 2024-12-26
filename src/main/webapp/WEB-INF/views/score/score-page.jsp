@@ -156,7 +156,7 @@
 
         data.forEach(({id, maskingName, sum, avg, rank}) => {
             $scores.innerHTML += `
-                    <li>
+                    <li data-score-id="\${id}">
                         # 이름: <a href="/score/\${id}">\${maskingName}</a>, 총점: \${sum}점,
                         평균: \${avg}점, 석차: \${rank}
                         <a href='#' class='del-btn'>삭제</a>

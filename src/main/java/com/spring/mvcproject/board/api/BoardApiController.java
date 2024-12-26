@@ -1,6 +1,7 @@
 package com.spring.mvcproject.board.api;
 
 import com.spring.mvcproject.board.dto.request.BoardSaveDto;
+import com.spring.mvcproject.board.dto.response.BoardDetailResponse;
 import com.spring.mvcproject.board.dto.response.BoardListDto;
 import com.spring.mvcproject.board.entity.Board;
 import jakarta.validation.Valid;
@@ -9,11 +10,13 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import static java.util.Comparator.*;
-import static java.util.stream.Collectors.*;
+import static java.util.Comparator.comparing;
+import static java.util.stream.Collectors.toList;
 
 @RestController
 @RequestMapping("/api/v1/boards")
@@ -25,7 +28,9 @@ public class BoardApiController {
 
     public BoardApiController() {
         Board b1 = Board.of(nextId++, "꿀잼게시물", "개노잼이야 사실");
+        b1.setRegDateTime(LocalDateTime.of(2023, 11, 11, 0,0,0));
         Board b2 = Board.of(nextId++, "앙영하긔", "긔긔요미미미ㅣ");
+        b2.setRegDateTime(LocalDateTime.of(2024, 3, 15, 0,0,0));
         Board b3 = Board.of(nextId++, "이마트 갈때...", "홈플러스 쿠폰써도 되나요");
 
         boardStore.put(b1.getId(), b1);
@@ -60,8 +65,8 @@ public class BoardApiController {
     // 게시물 등록 POST
     @PostMapping
     public ResponseEntity<?> createBoard(
-            @RequestBody @Valid BoardSaveDto dto,
-            BindingResult bindingResult
+            @RequestBody @Valid BoardSaveDto dto
+            , BindingResult bindingResult
     ) {
         // 입력값 검증 응답 처리
         if (bindingResult.hasErrors()) {
@@ -86,4 +91,24 @@ public class BoardApiController {
         return ResponseEntity.ok().body("게시물 등록 성공! - "+ board);
 
     }
+
+    // 게시물 상세조회 요청처리
+    @GetMapping("/{id}")
+    public ResponseEntity<?> detail(@PathVariable Long id) {
+        // 특정 게시물 찾아오기
+        Board foundBoard = boardStore.get(id);
+
+        // 게시물이 없을 경우
+        if (foundBoard == null) {
+            return ResponseEntity
+                    .badRequest() // 400
+                    .body(id + "번 게시물은 존재하지 않습니다.");
+        }
+
+        // 게시물 원본데이터를 클라이언트 스펙에 맞게 변환
+        return ResponseEntity
+                .ok()
+                .body(BoardDetailResponse.from(foundBoard));
+    }
+
 }
