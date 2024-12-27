@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--namespace 얀동할 인터페이스의 풀네임-->
+<mapper namespace="com.spring.mvcproject.database.mybatis.SnackRepository">
+
+    <!--   id: 추상메서드 이름-->
+    <insert id="save">
+        INSERT INTO tbl_pet
+
+            (snack_name,snack_count,snack_weight)
+        VALUES
+            (#{snackName},#{snackCount},#{snackWeight})
+    </insert>
+    <!--yml 파일에 type-aliases -package안에 경로를 설정하여 Pet만 써도 됨-->
+    <select id="findById" resultType="Pet">
+        SELECT * FROM tbl_pet
+        WHERE id = #{id}
+
+    </select>
+    <!--전체 조회는 List지만 myBatis에서 알아서 해준다-->
+    <select id="findAll" resultType="Pet">
+        SELECT * FROM tbl_pet
+    </select>
+
+    <update id="updatePet">
+        UPDATE tbl_pet
+        SET
+            pet_name = #{petName}
+          ,pet_Age = #{petAge}
+          , injection = #{injection}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deletePet">
+        DELETE FROM tbl_pet
+        WHERE id = #{id}
+    </delete>
+
+    <select id="petCount" resultType="int">
+        SELECT COUNT(*)
+        FROM tbl_pet
+    </select>
+</mapper>

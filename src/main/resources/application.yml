@@ -7,6 +7,12 @@ logging:
 
 #logging.level.org.springframework.web.servlet.DispatcherServlet=DEBUG
 
+# MyBatis 설정
+mybatis:
+  mapper-locations: classpath:mapper/**/*.xml   #src -> main -> resources
+  type-aliases-package: com.spring.mvcproject.database.mybatis
+  configuration:
+      map-underscore-to-camel-case: true  #CamelCase만 맞춰주면 알아서 맞춰준다는 설정
 #jsp setting
 spring:
   mvc:
