@@ -5,26 +5,24 @@ import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 
+// CRUD 정의
 @Mapper
 public interface PetRepository {
-    //Create
+    // Create
     boolean save(Pet pet);
 
-    //Read -Single Matching
+    // Read - Single Matching
     Pet findById(Long id);
 
-    //Read - Multiple Matching
+    // Read - Multiple Matching
     List<Pet> findAll();
 
     // Update
     boolean updatePet(Pet pet);
 
-    //Delete
-    boolean deletePet(Long id);
-
+    // Delete
+    boolean deleteById(Long id);
 
     // Read - Count
-
     int petCount();
-
 }

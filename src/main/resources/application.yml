@@ -1,31 +1,44 @@
+
 server:
   port: 9000
 
 logging:
   level:
-    root: info
+    root: info  # spring all log
+    com.spring.mvcproject: debug
 
 #logging.level.org.springframework.web.servlet.DispatcherServlet=DEBUG
 
-# MyBatis 설정
-mybatis:
-  mapper-locations: classpath:mapper/**/*.xml   #src -> main -> resources
-  type-aliases-package: com.spring.mvcproject.database.mybatis
-  configuration:
-      map-underscore-to-camel-case: true  #CamelCase만 맞춰주면 알아서 맞춰준다는 설정
-#jsp setting
 spring:
+  # file upload setting
+  servlet:
+    multipart:
+      max-file-size: 10MB   # 업로드한 파일 한개의 최대 용량
+      max-request-size: 100MB  # 한번에 업로드할 수 있는 파일의 총 용량
+
+  #jsp setting
   mvc:
     view:
       prefix: /WEB-INF/views/
       suffix: .jsp
+  # database setting
   datasource:
     url: jdbc:mariadb://localhost:3306/practice
     username: root
     password: mariadb
     driver-class-name: org.mariadb.jdbc.Driver
-#database setting
+
+# MyBatis setting
+mybatis:
+  # sql file location
+  mapper-locations: classpath:mapper/**/*.xml
+  type-aliases-package: com.spring.mvcproject.database.mybatis
+  configuration:
+    map-underscore-to-camel-case: true
 
 
-
-
+# custom setting - file
+# 사용자가 올린 파일들을 어디에 저장할거냐
+file:
+  upload:
+    location: ${user.home}/spring/upload/

@@ -1,6 +1,9 @@
 package com.spring.mvcproject.database.mybatis.service;
 
 import com.spring.mvcproject.database.mybatis.PetRepository;
+import com.spring.mvcproject.database.mybatis.dto.request.PetSaveRequest;
+import com.spring.mvcproject.database.mybatis.dto.response.PetDetailResponse;
+import com.spring.mvcproject.database.mybatis.dto.response.PetListResponse;
 import com.spring.mvcproject.database.mybatis.dto.response.PetResponse;
 import com.spring.mvcproject.database.mybatis.entity.Pet;
 import lombok.AllArgsConstructor;
@@ -11,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 // 클라이언트의 요청과 응답 사이를 중간처리
 @Service
@@ -20,36 +24,30 @@ public class PetService {
     private final PetRepository petRepository;
 
     // 목록조회 중간 처리
-    public List<PetResponse> getList() {
-
-        List<Pet> petList = petRepository.findAll();
+    public PetListResponse getList() {
         // List<Pet>을 List<PetResponse>로 변환
-        List<PetResponse> responseList = new ArrayList<>();
+        List<PetResponse> petList = petRepository.findAll()
+                .stream()
+                .map(PetResponse::from)
+                .collect(Collectors.toList());
 
-        for (Pet pet : petList) {
-            PetResponse response = new PetResponse();
-            response.setId(pet.getId());
-            response.setName(pet.getPetName());
-
-            int age = pet.getPetAge();
-            response.setAge(age);
-            response.setBirth(LocalDate.now().getYear() - age + 1);
-
-            responseList.add(response);
-        }
-
-        return responseList;
+        return PetListResponse.builder()
+                .totalCount(petRepository.petCount())
+                .petList(petList)
+                .build();
     }
 
     // 개별조회 중간처리
-    public Pet getPet(Long id) {
+    public PetDetailResponse getPet(Long id) {
         Pet pet = petRepository.findById(id);
-        return pet;
+
+        // 클라이언트에게 반환할 DTO로 변환
+        return PetDetailResponse.from(pet);
     }
 
     // 생성 중간처리
-    public boolean createPet(Pet pet) {
-        boolean savedPet = petRepository.save(pet);
+    public boolean createPet(PetSaveRequest pet) {
+        boolean savedPet = petRepository.save(pet.toEntity());
         return savedPet;
     }
 
@@ -61,7 +59,7 @@ public class PetService {
 
     // 삭제 중간처리
     public boolean delete(Long id) {
-        boolean flag = petRepository.deletePet(id);
+        boolean flag = petRepository.deleteById(id);
         return flag;
     }
 

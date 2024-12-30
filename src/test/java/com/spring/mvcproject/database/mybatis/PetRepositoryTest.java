@@ -41,7 +41,7 @@ class PetRepositoryTest {
     }
     @Test
     void deleteByIdTest(){
-       petRepository.deletePet(3L);
+       petRepository.deleteById(3L);
 
     }
     @Test
