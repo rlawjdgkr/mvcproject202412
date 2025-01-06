@@ -32,18 +32,49 @@
 <a href="/mvc/v1/register">다시 등록하기</a>
 <script>
 
+
+
     function renderPracticeList(data){
      const $dancerList  = document.getElementById('dancer-list');
      data.forEach(({id,name,age}) =>{
           $dancerList.innerHTML += `
-            <li>
+            <li data-id ="\${id}">
            # 아이디: <span class="dancer-name">\${id}</span>,
         # 이름: \${name},
         # 나이: \${age}
+        <button class="del-btn">삭제하기</button>
           </li>`
      });
+     }
+     // 회원 삭제 이벤트
+    const $delBtn = document.getElementById('dancer-list');
+    $delBtn.addEventListener('click', (e) =>{
+       if(e.target.classList.contains('del-btn')){
+           const $li = e.target.closest('li'); // 삭제 버튼의 부모 <li>를 찾음
+           const id = $li.dataset.id; // <li>의 data-id 값 가져오기
+           console.log('삭제요청 아이디 : ' , id);
+         getDelete(id);
+       $li.remove();
+       }
+    });
 
+    // 회원 삭제 정보 요청
+    async function getDelete(id){
+        const res =  await fetch(`/api/v1/practice/\${id}` , {method: 'DELETE'});
+        if(res.ok){
+            console.log('삭제성공')
+
+
+
+
+
+
+
+
+        }
     }
+
+
     async function getApi(){
         const res = await fetch("/api/v1/practice");
         const data = await res.json();

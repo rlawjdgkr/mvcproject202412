@@ -1,7 +1,10 @@
 package com.spring.mvcproject.kpractice.api;
 
+import com.spring.mvcproject.kpractice.dto.PracticeDto;
 import com.spring.mvcproject.kpractice.practice.Practice;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -52,13 +55,27 @@ public class PracticeApiController {
 
     }
 
-    //추가 API
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody Practice practice){
+    public ResponseEntity<?> create(
+            @RequestBody @Valid PracticeDto dto,
+            BindingResult bindingResult) {
+
+        // 입력값 검증
+        if (bindingResult.hasErrors()) {
+            // 에러 메시지를 생성하여 반환
+            String errorMessage = bindingResult.getFieldErrors().stream()
+                    .map(error -> error.getField() + ": " + error.getDefaultMessage())
+                    .reduce("", (a, b) -> a + "\n" + b);
+            return ResponseEntity.badRequest().body(errorMessage);
+        }
+
+        // DTO → 엔티티 변환
+        Practice practice = dto.toEntity();
         practice.setId(nextId++);
         practiceStore.put(practice.getId(), practice);
-    return ResponseEntity.ok().body("생성완료");
-  }
+
+        return ResponseEntity.ok().body("생성 완료");
+    }
 
 
 }
